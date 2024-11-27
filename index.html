@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory Management</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(45deg, #ff7e5f, #feb47b);
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .main-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            width: 100%;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        .input-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        input {
+            padding: 10px;
+            width: 40%;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            margin-right: 10px;
+            font-size: 14px;
+        }
+
+        button {
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 12px;
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        td {
+            background-color: #f2f2f2;
+        }
+
+        button.modify, button.remove {
+            padding: 5px 10px;
+            border: none;
+            color: white;
+            cursor: pointer;
+        }
+
+        button.modify {
+            background-color: #007BFF;
+        }
+
+        button.remove {
+            background-color: #FF6347;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="main-container">
+        <h1>Inventory Management</h1>
+
+        <div class="input-container">
+            <input type="text" id="product-name" placeholder="Product Name">
+            <input type="number" id="product-quantity" placeholder="Quantity">
+            <button id="add-product">Add Product</button>
+        </div>
+
+        <table id="inventory-list">
+            <thead>
+                <tr>
+                    <th>Product Name</th>
+                    <th>Quantity</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        document.getElementById('add-product').addEventListener('click', function() {
+            const productName = document.getElementById('product-name').value;
+            const productQuantity = document.getElementById('product-quantity').value;
+
+            if (!productName || !productQuantity) {
+                alert('Please fill out all fields');
+                return;
+            }
+
+            const tableBody = document.getElementById('inventory-list').getElementsByTagName('tbody')[0];
+            const row = tableBody.insertRow();
+
+            row.insertCell(0).textContent = productName;
+            row.insertCell(1).textContent = productQuantity;
+
+            const actionCell = row.insertCell(2);
+
+            const modifyButton = document.createElement('button');
+            modifyButton.textContent = 'Modify';
+            modifyButton.classList.add('modify');
+            modifyButton.addEventListener('click', function() {
+                modifyProduct(row, productName, productQuantity);
+            });
+
+            const removeButton = document.createElement('button');
+            removeButton.textContent = 'Remove';
+            removeButton.classList.add('remove');
+            removeButton.addEventListener('click', function() {
+                removeProduct(row);
+            });
+
+            actionCell.appendChild(modifyButton);
+            actionCell.appendChild(removeButton);
+
+            document.getElementById('product-name').value = '';
+            document.getElementById('product-quantity').value = '';
+        });
+
+        function modifyProduct(row, oldName, oldQuantity) {
+            document.getElementById('product-name').value = oldName;
+            document.getElementById('product-quantity').value = oldQuantity;
+
+            row.parentNode.removeChild(row);
+
+            document.getElementById('add-product').textContent = 'Update Product';
+            document.getElementById('add-product').addEventListener('click', function updateProduct() {
+                const productName = document.getElementById('product-name').value;
+                const productQuantity = document.getElementById('product-quantity').value;
+
+                if (!productName || !productQuantity) {
+                    alert('Please fill out all fields');
+                    return;
+                }
+
+                const tableBody = document.getElementById('inventory-list').getElementsByTagName('tbody')[0];
+                const row = tableBody.insertRow();
+
+                row.insertCell(0).textContent = productName;
+                row.insertCell(1).textContent = productQuantity;
+
+                const actionCell = row.insertCell(2);
+                const modifyButton = document.createElement('button');
+                modifyButton.textContent = 'Modify';
+                modifyButton.classList.add('modify');
+                modifyButton.addEventListener('click', function() {
+                    modifyProduct(row, productName, productQuantity);
+                });
+
+                const removeButton = document.createElement('button');
+                removeButton.textContent = 'Remove';
+                removeButton.classList.add('remove');
+                removeButton.addEventListener('click', function() {
+                    removeProduct(row);
+                });
+
+                actionCell.appendChild(modifyButton);
+                actionCell.appendChild(removeButton);
+
+                document.getElementById('product-name').value = '';
+                document.getElementById('product-quantity').value = '';
+                document.getElementById('add-product').textContent = 'Add Product';
+                document.getElementById('add-product').removeEventListener('click', updateProduct);
+            });
+        }
+
+        function removeProduct(row) {
+            row.parentNode.removeChild(row);
+        }
+    </script>
+</body>
+</html>
